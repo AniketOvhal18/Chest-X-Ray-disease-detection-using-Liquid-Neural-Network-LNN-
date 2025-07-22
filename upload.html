@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Upload Folder</title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        body {
+            background-color: #0a192f;
+            font-family: 'Arial', sans-serif;
+            color: #ccd6f6;
+        }
+        .navbar {
+            background-color: #112240;
+            padding: 10px 20px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+        }
+        .navbar img {
+            width: 80px; /* Larger logo */
+            height: auto;
+        }
+        .container {
+            margin-top: 50px;
+        }
+        .card {
+            padding: 20px; /* Smaller padding for a compact look */
+            border-radius: 15px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+            background-color: #112240;
+            border: 1px solid #1f4068;
+        }
+        .btn-custom {
+            background-color: #00bcd4;
+            color: #0a192f;
+            border: none;
+            font-weight: bold;
+            padding: 10px 20px;
+            border-radius: 25px;
+            transition: background-color 0.3s ease;
+        }
+        .btn-custom:hover {
+            background-color: #0097a7;
+            color: #0a192f;
+        }
+        .upload-area {
+            border: 2px dashed #1f4068;
+            border-radius: 15px;
+            padding: 20px; /* Smaller padding */
+            text-align: center;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+        .upload-area:hover {
+            background-color: #1f4068;
+        }
+        .upload-icon {
+            font-size: 2.5rem; /* Smaller icon */
+            color: #00bcd4;
+            margin-bottom: 15px; /* Smaller margin */
+        }
+        .upload-instructions {
+            font-size: 1rem; /* Smaller font size */
+            color: #8892b0;
+            margin-bottom: 15px; /* Smaller margin */
+        }
+        .file-input {
+            display: none;
+        }
+        .selected-folder {
+            margin-top: 15px; /* Smaller margin */
+            text-align: left;
+            display: none; /* Hide by default */
+        }
+        .selected-folder p {
+            background-color: #1f4068;
+            padding: 10px;
+            border-radius: 5px;
+            color: #ccd6f6;
+        }
+    </style>
+</head>
+<body>
+    <nav class="navbar">
+        <a class="navbar-brand" href="/">
+            <img src="{{ url_for('static', filename='logo.png') }}" alt="Logo">
+        </a>
+    </nav>
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-md-8">
+                <div class="card text-center">
+                    <h1>Upload Chest X-ray Images</h1>
+                    <form action="/upload" method="post" enctype="multipart/form-data" id="upload-form">
+                        <div class="upload-area" onclick="document.getElementById('file-input').click()">
+                            <div class="upload-icon">
+                                <i class="fas fa-cloud-upload-alt"></i>
+                            </div>
+                            <div class="upload-instructions">
+                                Click to upload or drag and drop your X-ray images (PNG, JPG, JPEG)
+                            </div>
+                        </div>
+                        <input type="file" id="file-input" name="folder" class="file-input" accept=".png, .jpg, .jpeg" webkitdirectory multiple required>
+                        <div class="selected-folder" id="selected-folder">
+                            <h5>Selected Folder:</h5>
+                            <p id="folder-name"></p>
+                        </div>
+                        <div class="text-center" style="margin-top: 20px;">
+                            <button type="submit" class="btn btn-custom btn-lg">
+                                <i class="fas fa-upload"></i> Upload and Analyze
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Function to extract folder name from file path
+        function getFolderName(filePath) {
+            const parts = filePath.split('/');
+            return parts[parts.length - 2];
+        }
+
+        // Function to display selected folder name
+        document.getElementById('file-input').addEventListener('change', function(event) {
+            const files = event.target.files;
+            if (files.length > 0) {
+                const folderName = getFolderName(files[0].webkitRelativePath);
+                document.getElementById('folder-name').textContent = folderName;
+                document.getElementById('selected-folder').style.display = 'block';
+            }
+        });
+
+        // Function to handle form submission
+        document.getElementById('upload-form').addEventListener('submit', function(event) {
+            const fileInput = document.getElementById('file-input');
+            if (fileInput.files.length === 0) {
+                event.preventDefault();
+                alert('Please select at least one file.');
+            }
+        });
+    </script>
+</body>
+</html>

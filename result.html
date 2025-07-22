@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Classification Result</title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        body {
+            background-color: #0a192f;
+            font-family: 'Arial', sans-serif;
+            color: #ccd6f6;
+        }
+        .navbar {
+            background-color: #112240;
+            padding: 10px 20px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+        }
+        .navbar img {
+            width: 80px; /* Larger logo */
+            height: auto;
+        }
+        .container {
+            margin-top: 50px;
+        }
+        .card {
+            padding: 20px; /* Smaller padding */
+            border-radius: 15px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+            background-color: #112240;
+            border: 1px solid #1f4068;
+        }
+        .btn-custom {
+            background-color: #00bcd4;
+            color: #0a192f;
+            border: none;
+            font-weight: bold;
+            padding: 10px 20px;
+            border-radius: 25px;
+            transition: background-color 0.3s ease;
+        }
+        .btn-custom:hover {
+            background-color: #0097a7;
+            color: #0a192f;
+        }
+        .results-table {
+            width: 100%;
+            margin-top: 20px;
+            border-collapse: collapse;
+            color: #ccd6f6;
+        }
+        .results-table th, .results-table td {
+            padding: 12px;
+            border: 1px solid #1f4068;
+            text-align: left;
+        }
+        .results-table th {
+            background-color: #1f4068;
+            color: #00bcd4;
+            font-weight: bold;
+        }
+        .results-table tr:hover {
+            background-color: #1f4068;
+        }
+        .result-icon {
+            font-size: 5rem;
+            color: #00bcd4;
+            margin-bottom: 20px;
+        }
+        .table-responsive {
+            overflow-x: auto;
+        }
+        .final-prediction {
+            font-size: 1.2rem;
+            color: #00bcd4;
+            margin-top: 20px;
+            font-weight: bold;
+        }
+        .priority-high {
+            color: #ff6b6b; /* Red for high priority */
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+    <nav class="navbar">
+        <a class="navbar-brand" href="/">
+            <img src="{{ url_for('static', filename='logo.png') }}" alt="Logo">
+        </a>
+    </nav>
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-md-10">
+                <div class="card text-center">
+                    <h1>Classification Result</h1>
+                    <div class="result-icon">📊</div>
+                    <p>The results for all images have been saved in a CSV file.</p>
+                    <div class="text-center">
+                        <a href="{{ url_for('static', filename='uploads/results.csv') }}" class="btn btn-custom" download>Download CSV</a>
+                    </div>
+                    <div class="table-responsive">
+                        <table class="results-table">
+                            <thead>
+                                <tr>
+                                    <th>#</th>
+                                    <th>Filename</th>
+                                    <th>Model 1 Prediction</th>
+                                    <th>Model 1 Confidence</th>
+                                    <th>Model 2 Prediction</th>
+                                    <th>Model 2 Confidence</th>
+                                    <th>Final Prediction</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for result in results %}
+                                    <tr>
+                                        <td>{{ loop.index }}</td>
+                                        <td>{{ result['filename'] }}</td>
+                                        <td>{{ result['prediction1'] }}</td>
+                                        <td>{{ "%.2f"|format(result['confidence1']) }}</td>
+                                        <td>{{ result['prediction2'] }}</td>
+                                        <td>{{ "%.2f"|format(result['confidence2']) }}</td>
+                                        <td class="final-prediction priority-high">
+                                            {{ result['final_prediction'] }}
+                                        </td>
+                                    </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                    <div class="text-center" style="margin-top: 20px;">
+                        <a href="/" class="btn btn-custom">Upload Another Folder</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
